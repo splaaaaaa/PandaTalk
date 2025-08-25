@@ -1,42 +1,74 @@
-# Pandatalk - React Native Chat App
+# 🐼 PandaTalk - 智能语音评测应用
 
-一个基于React Native和Expo构建的现代化聊天应用，具有iOS风格的设计和完整的聊天功能。
+一个基于React Native和Expo构建的现代化语音评测应用，集成讯飞语音识别API，提供专业的发音练习、PK竞技和个人成长追踪功能。
 
-## 🚀 功能特性
+## 🎯 核心功能
 
-### 主要功能
-- **聊天列表**: 显示所有聊天对话，支持未读消息提醒
-- **联系人管理**: 管理联系人列表，支持搜索和快速操作
-- **聊天界面**: 完整的聊天对话界面，支持发送和接收消息
-- **发现功能**: 发现新的群组、频道和用户
-- **设置页面**: 完整的应用设置和用户资料管理
+### 🎤 智能语音评测
+- **实时语音识别**: 集成讯飞语音识别API，提供准确的发音评测
+- **多维度评分**: 发音清晰度、语速控制、声调准确度、完整性、准确度、情感表达
+- **详细分析报告**: 逐字分析，识别发音错误和改善建议
+- **音频回放**: 支持录音回放，对比练习效果
 
-### 技术特性
-- 基于Expo Router的文件路由系统
-- TypeScript支持
-- 响应式设计，支持iOS和Android
-- 现代化的UI设计，遵循iOS设计规范
-- 组件化架构，易于维护和扩展
+### 🏆 练习模式
+- **自由练习**: 选择练习内容，自由练习发音
+- **挑战模式**: 完成指定挑战，获得成就徽章
+- **进度追踪**: 记录练习天数、准确率等关键指标
+- **历史记录**: 保存所有练习记录，追踪成长轨迹
 
-## 📱 页面结构
+### ⚔️ PK竞技场
+- **实时对战**: 与其他用户进行语音PK对战
+- **等级系统**: 通过胜利提升等级，解锁新功能
+- **排行榜**: 查看排名，挑战更高水平用户
+- **决斗记录**: 保存对战历史，分析胜负原因
+
+### 👤 个人档案
+- **成就系统**: 解锁各种成就徽章，展示学习成果
+- **统计数据**: 练习天数、金币数量、PK胜率等详细统计
+- **成长轨迹**: 可视化展示学习进度和技能提升
+- **个性化设置**: 自定义头像、昵称等个人信息
+
+## 🛠️ 技术架构
+
+### 前端技术栈
+- **框架**: React Native + Expo
+- **路由**: Expo Router (文件路由系统)
+- **语言**: TypeScript
+- **状态管理**: React Hooks
+- **UI组件**: 自定义组件 + Expo Vector Icons
+
+### 核心服务
+- **语音识别**: 讯飞语音识别API集成
+- **音频处理**: Expo AV音频录制和播放
+- **网络通信**: WebSocket实时通信
+- **数据存储**: 本地存储 + 云端同步
+
+### 设计特色
+- **iOS风格设计**: 遵循iOS设计规范，提供原生体验
+- **响应式布局**: 适配不同屏幕尺寸和设备
+- **流畅动画**: 平滑的页面过渡和交互效果
+- **深色模式**: 支持系统主题切换
+
+## 📱 应用结构
 
 ```
 app/
-├── (tabs)/
-│   ├── index.tsx          # 聊天列表页面
-│   ├── contacts.tsx       # 联系人页面
-│   ├── explore.tsx        # 发现页面
-│   ├── settings.tsx       # 设置页面
-│   └── _layout.tsx        # 标签页布局
-├── chat/
-│   └── [id].tsx          # 聊天详情页面
-└── _layout.tsx            # 根布局
+├── (tabs)/                    # 主要标签页
+│   ├── index.tsx             # 首页 - 个人成就和挑战
+│   ├── pk-arena.tsx          # PK竞技场
+│   └── profile.tsx           # 个人档案
+├── practice.tsx               # 练习页面
+├── voice-record.tsx           # 录音页面
+├── voice-record-complete.tsx  # 录音完成页面
+├── result.tsx                 # 评测结果页面
+├── edit-profile.tsx           # 编辑档案页面
+└── debug-api.tsx              # API调试页面
 ```
 
-## 🛠️ 安装和运行
+## 🚀 快速开始
 
-### 前置要求
-- Node.js 18+ 
+### 环境要求
+- Node.js 18+
 - npm 或 yarn
 - Expo CLI
 - iOS Simulator (macOS) 或 Android Emulator
@@ -52,79 +84,83 @@ app/
 2. **安装依赖**
    ```bash
    npm install
-   # 或
-   yarn install
    ```
 
-3. **启动开发服务器**
+3. **配置API密钥**
+   - 在 `config/api-config.ts` 中配置讯飞API密钥
+   - 获取APPID、API_SECRET和API_KEY
+
+4. **启动开发服务器**
    ```bash
-   npm start
-   # 或
-   yarn start
+   # 使用隧道模式（推荐，解决扫码问题）
+   expo start --tunnel
+   
+   # 或使用本地网络
+   expo start --lan
    ```
 
-4. **运行应用**
+5. **运行应用**
+   - 扫描二维码在真机上运行
    - 按 `i` 在iOS模拟器中运行
    - 按 `a` 在Android模拟器中运行
    - 按 `w` 在Web浏览器中运行
-   - 扫描二维码在真机上运行
 
-## 📱 应用截图
+## 🔧 配置说明
 
-### 主要页面
-- **聊天列表**: 显示所有聊天对话
-- **联系人**: 管理联系人列表
-- **发现**: 发现新的群组和用户
-- **设置**: 应用设置和用户资料
-- **聊天详情**: 具体的聊天对话界面
-
-## 🎨 设计特色
-
-- **iOS风格**: 遵循iOS设计规范，提供原生体验
-- **现代化UI**: 使用最新的设计趋势和组件
-- **响应式布局**: 适配不同屏幕尺寸
-- **流畅动画**: 平滑的页面过渡和交互效果
-
-## 🔧 技术栈
-
-- **框架**: React Native + Expo
-- **路由**: Expo Router
-- **语言**: TypeScript
-- **图标**: Expo Vector Icons
-- **图片**: Expo Image
-- **状态管理**: React Hooks
-- **样式**: StyleSheet
-
-## 📁 项目结构
-
-```
-PandatalkApp/
-├── app/                   # 应用页面
-├── components/            # 可复用组件
-├── constants/             # 常量定义
-├── hooks/                 # 自定义Hooks
-├── assets/                # 静态资源
-├── scripts/               # 构建脚本
-└── package.json           # 项目配置
+### 讯飞API配置
+```typescript
+// config/api-config.ts
+export const xfyunConfig = {
+  APPID: 'your_app_id',
+  API_SECRET: 'your_api_secret',
+  API_KEY: 'your_api_key'
+};
 ```
 
-## 🚀 开发指南
+### 音频配置
+- 支持高质量音频录制
+- 自动音频格式转换
+- 实时音频流处理
 
-### 添加新页面
-1. 在 `app/` 目录下创建新的页面文件
-2. 使用Expo Router的文件路由系统
-3. 遵循现有的页面结构和样式规范
+## 📊 功能特性详解
 
-### 添加新组件
-1. 在 `components/` 目录下创建组件文件
-2. 使用TypeScript定义props接口
-3. 遵循现有的组件命名和样式规范
+### 语音评测流程
+1. **录音**: 高质量音频录制，支持实时预览
+2. **上传**: 自动音频编码和分块上传
+3. **分析**: 讯飞API实时语音识别和评测
+4. **结果**: 多维度评分和详细分析报告
+5. **反馈**: 可视化展示评测结果和改进建议
 
-### 样式指南
-- 使用StyleSheet创建样式
-- 遵循iOS设计规范
-- 使用主题色彩系统
-- 支持深色模式
+### 成就系统
+- **发音达人**: 连续7天练习
+- **发音大师**: 准确率达到95%
+- **挑战王**: 完成每周挑战目标
+- **PK王者**: 在竞技场获得高胜率
+
+### 数据统计
+- **练习统计**: 练习天数、总时长、准确率
+- **竞技统计**: PK次数、胜率、等级
+- **成长轨迹**: 技能提升曲线、里程碑记录
+
+## 🎨 设计理念
+
+- **用户友好**: 简洁直观的界面设计
+- **功能完整**: 覆盖语音学习的全流程
+- **体验流畅**: 优化的交互和动画效果
+- **个性化**: 支持用户自定义和偏好设置
+
+## 🔍 故障排除
+
+### 常见问题
+1. **扫码蓝屏**: 使用 `--tunnel` 模式启动
+2. **录音失败**: 检查麦克风权限设置
+3. **API错误**: 验证讯飞API密钥配置
+4. **网络问题**: 确保网络连接稳定
+
+### 调试工具
+- 内置API调试页面
+- 详细的控制台日志
+- 网络状态监控
 
 ## 🤝 贡献指南
 
@@ -140,15 +176,20 @@ PandatalkApp/
 
 ## 📞 联系方式
 
-- 项目链接: [https://github.com/yourusername/PandatalkApp](https://github.com/yourusername/PandatalkApp)
-- 问题反馈: [Issues](https://github.com/yourusername/PandatalkApp/issues)
+- **项目维护者**: PandaTalk Team
+- **联系邮箱**: spl0203@163.com
+- **项目链接**: [https://github.com/yourusername/PandatalkApp](https://github.com/yourusername/PandatalkApp)
+- **问题反馈**: [Issues](https://github.com/yourusername/PandatalkApp/issues)
 
 ## 🙏 致谢
 
 - [Expo](https://expo.dev/) - 优秀的React Native开发平台
 - [React Native](https://reactnative.dev/) - 跨平台移动应用开发框架
+- [讯飞开放平台](https://www.xfyun.cn/) - 专业的语音识别服务
 - [Ionicons](https://ionic.io/ionicons) - 精美的图标库
 
 ---
 
-**Pandatalk** - 让聊天更简单，让连接更紧密 🐼💬
+**PandaTalk** - 让语音学习更智能，让发音练习更有效 🐼🎤✨
+
+*通过AI驱动的语音评测，帮助用户提升发音准确度，实现语言学习的突破性进步。*
