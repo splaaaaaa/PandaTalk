@@ -1,0 +1,21 @@
+{
+  "name": "Pandatalk Integration",
+  "id": "pandatalk-integration",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": ["figma"],
+  "networkAccess": {
+    "allowedDomains": ["*"]
+  },
+  "permissions": [
+    "currentuser",
+    "activeusers"
+  ],
+  "capabilities": [
+    "inspect"
+  ],
+  "enableProposedApi": false,
+  "enablePrivatePluginApi": false
+}
+

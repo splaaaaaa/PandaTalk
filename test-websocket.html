@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>讯飞语音识别API测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        .log { background: #f5f5f5; padding: 10px; border-radius: 3px; margin: 10px 0; font-family: monospace; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <h1>🎤 讯飞语音识别API测试</h1>
+    
+    <div class="test-section">
+        <h3>🔧 API配置</h3>
+        <p><strong>APPID:</strong> a696bc26</p>
+        <p><strong>API_SECRET:</strong> ZDQxMGYzNmQ2ZTg4NWNjOTY2MjhiZjI3</p>
+        <p><strong>API_KEY:</strong> 761d772b70b55f9225c5e55b89c58963</p>
+    </div>
+
+    <div class="test-section">
+        <h3>🔗 连接测试</h3>
+        <button id="testConnection">测试WebSocket连接</button>
+        <button id="testConfig">测试配置发送</button>
+        <button id="testAudio">测试音频数据发送</button>
+        <button id="disconnect">断开连接</button>
+    </div>
+
+    <div class="test-section">
+        <h3>📊 测试结果</h3>
+        <div id="status" class="info">等待测试...</div>
+        <div id="logs" class="log"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+        let websocket = null;
+        let isConnected = false;
+
+        // 生成签名
+        function generateSignature() {
+            const date = new Date().toUTCString();
+            const signatureString = `host: ise-api.xfyun.cn\ndate: ${date}\nGET /v2/open-ise HTTP/1.1`;
+            
+            const signature = CryptoJS.HmacSHA256(signatureString, 'ZDQxMGYzNmQ2ZTg4NWNjOTY2MjhiZjI3');
+            const signatureB64 = CryptoJS.enc.Base64.stringify(signature);
+            
+            const authorization = `api_key="761d772b70b55f9225c5e55b89c58963", algorithm="hmac-sha256", headers="host date request-line", signature="${signatureB64}"`;
+            
+            const authParams = {
+                authorization: btoa(authorization),
+                date: date,
+                host: 'ise-api.xfyun.cn'
+            };
+
+            const queryString = Object.entries(authParams)
+                .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+                .join('&');
+
+            return `wss://ise-api.xfyun.cn/v2/open-ise?${queryString}`;
+        }
+
+        // 日志记录
+        function log(message, type = 'info') {
+            const logs = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = type;
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logs.appendChild(logEntry);
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        // 更新状态
+        function updateStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = type;
+        }
+
+        // 测试WebSocket连接
+        document.getElementById('testConnection').addEventListener('click', function() {
+            if (websocket && websocket.readyState === WebSocket.OPEN) {
+                log('❌ WebSocket已连接，请先断开', 'error');
+                return;
+            }
+
+            try {
+                const url = generateSignature();
+                log('🔗 正在连接: ' + url.substring(0, 100) + '...', 'info');
+                updateStatus('正在连接...', 'info');
+
+                websocket = new WebSocket(url);
+                
+                websocket.onopen = function() {
+                    isConnected = true;
+                    log('✅ WebSocket连接成功', 'success');
+                    updateStatus('WebSocket已连接', 'success');
+                    document.getElementById('testConfig').disabled = false;
+                    document.getElementById('testAudio').disabled = false;
+                };
+
+                websocket.onmessage = function(event) {
+                    try {
+                        const data = JSON.parse(event.data);
+                        log('📥 收到消息: ' + JSON.stringify(data, null, 2), 'info');
+                    } catch (e) {
+                        log('📥 收到原始消息: ' + event.data, 'info');
+                    }
+                };
+
+                websocket.onerror = function(error) {
+                    log('❌ WebSocket错误: ' + error, 'error');
+                    updateStatus('连接错误', 'error');
+                };
+
+                websocket.onclose = function(event) {
+                    isConnected = false;
+                    log('🔌 WebSocket连接关闭: ' + event.code + ' - ' + event.reason, 'info');
+                    updateStatus('连接已关闭', 'info');
+                    document.getElementById('testConfig').disabled = true;
+                    document.getElementById('testAudio').disabled = true;
+                };
+
+            } catch (error) {
+                log('❌ 连接失败: ' + error.message, 'error');
+                updateStatus('连接失败', 'error');
+            }
+        });
+
+        // 测试配置发送
+        document.getElementById('testConfig').addEventListener('click', function() {
+            if (!websocket || websocket.readyState !== WebSocket.OPEN) {
+                log('❌ WebSocket未连接', 'error');
+                return;
+            }
+
+            const configData = {
+                common: {
+                    app_id: 'a696bc26'
+                },
+                business: {
+                    sub: "ise",
+                    ent: "cn_vip",
+                    category: "read_sentence",
+                    cmd: "ssb",
+                    text: "\uFEFF紅鯉魚與綠鯉魚與驢",
+                    tte: "utf-8",
+                    ttp_skip: true,
+                    aue: "raw",
+                    auf: "audio/L16;rate=16000",
+                    aus: 1
+                },
+                data: {
+                    status: 0,
+                    data: "",
+                    data_type: 1
+                }
+            };
+
+            try {
+                websocket.send(JSON.stringify(configData));
+                log('📤 配置已发送: ' + JSON.stringify(configData, null, 2), 'success');
+                updateStatus('配置发送成功', 'success');
+            } catch (error) {
+                log('❌ 配置发送失败: ' + error.message, 'error');
+                updateStatus('配置发送失败', 'error');
+            }
+        });
+
+        // 测试音频数据发送
+        document.getElementById('testAudio').addEventListener('click', function() {
+            if (!websocket || websocket.readyState !== WebSocket.OPEN) {
+                log('❌ WebSocket未连接', 'error');
+                return;
+            }
+
+            // 模拟音频数据（空数据用于测试）
+            const audioMessage = {
+                business: {
+                    aue: "raw",
+                    cmd: "auw",
+                    aus: 4
+                },
+                data: {
+                    status: 2,
+                    data: "",
+                    data_type: 1
+                }
+            };
+
+            try {
+                websocket.send(JSON.stringify(audioMessage));
+                log('📤 音频数据已发送: ' + JSON.stringify(audioMessage, null, 2), 'success');
+                updateStatus('音频数据发送成功', 'success');
+            } catch (error) {
+                log('❌ 音频数据发送失败: ' + error.message, 'error');
+                updateStatus('音频数据发送失败', 'error');
+            }
+        });
+
+        // 断开连接
+        document.getElementById('disconnect').addEventListener('click', function() {
+            if (websocket) {
+                websocket.close();
+                log('🔌 主动断开连接', 'info');
+            }
+        });
+
+        // 页面加载完成后的初始化
+        window.addEventListener('load', function() {
+            log('🚀 测试页面加载完成', 'success');
+            log('📱 您的API配置: APPID=a696bc26', 'info');
+            log('🔑 请点击"测试WebSocket连接"开始测试', 'info');
+        });
+    </script>
+</body>
+</html>
