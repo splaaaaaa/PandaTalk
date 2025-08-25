@@ -9,6 +9,7 @@
 - **多维度评分**: 发音清晰度、语速控制、声调准确度、完整性、准确度、情感表达
 - **详细分析报告**: 逐字分析，识别发音错误和改善建议
 - **音频回放**: 支持录音回放，对比练习效果
+- **技术规格**: 16kHz PCM音频，WebSocket实时通信，80ms音频分块处理
 
 ### 🏆 练习模式
 - **自由练习**: 选择练习内容，自由练习发音
@@ -42,6 +43,13 @@
 - **音频处理**: Expo AV音频录制和播放
 - **网络通信**: WebSocket实时通信
 - **数据存储**: 本地存储 + 云端同步
+
+### API集成配置
+- **讯飞语音评测API**: 已预配置，支持开箱即用
+- **WebSocket连接**: `wss://ise-api.xfyun.cn/v2/open-ise`
+- **音频格式**: 16kHz PCM，单声道，16位采样
+- **评测类型**: 中文句子朗读评测
+- **实时评分**: 多维度发音质量分析
 
 ### 设计特色
 - **iOS风格设计**: 遵循iOS设计规范，提供原生体验
@@ -87,8 +95,9 @@ app/
    ```
 
 3. **配置API密钥**
-   - 在 `config/api-config.ts` 中配置讯飞API密钥
-   - 获取APPID、API_SECRET和API_KEY
+   - 项目已预配置讯飞语音评测API，支持开箱即用
+   - 如需自定义配置，可在 `config/api-config.ts` 中修改
+   - 支持环境变量配置：`EXPO_PUBLIC_XFYUN_*`
 
 4. **启动开发服务器**
    ```bash
@@ -107,20 +116,45 @@ app/
 
 ## 🔧 配置说明
 
-### 讯飞API配置
+### 讯飞语音评测API配置
+项目已预配置讯飞语音识别API，支持开箱即用：
+
 ```typescript
 // config/api-config.ts
 export const xfyunConfig = {
-  APPID: 'your_app_id',
-  API_SECRET: 'your_api_secret',
-  API_KEY: 'your_api_key'
+  APPID: 'a696bc26',
+  API_SECRET: 'ZDQxMGYzNmQ2ZTg4NWNjOTY2MjhiZjI3',
+  API_KEY: '761d772b70b55f9225c5e55b89c58963',
+  BASE_URL: 'wss://ise-api.xfyun.cn/v2/open-ise'
 };
 ```
 
-### 音频配置
-- 支持高质量音频录制
-- 自动音频格式转换
-- 实时音频流处理
+### 音频处理配置
+- **音频格式**: 16kHz采样率的PCM音频
+- **编码方式**: RAW原始音频数据
+- **声道设置**: 单声道录音
+- **分块大小**: 2560字节（80ms音频数据块）
+- **采样参数**: 16kHz采样率，16位采样位宽
+
+### 语音评测配置
+- **评测类型**: 句子朗读评测
+- **支持语言**: 中文（zh_cn）
+- **引擎类型**: 中文VIP引擎（cn_vip）
+- **文本编码**: UTF-8编码
+
+### 评分等级系统
+- **优秀 (90-100分)**: 🟢 绿色标识
+- **良好 (80-89分)**: 🔵 蓝色标识  
+- **一般 (70-79分)**: 🟠 橙色标识
+- **需要改进 (0-69分)**: 🔴 红色标识
+
+### 环境变量支持
+项目支持通过环境变量配置API密钥：
+```bash
+EXPO_PUBLIC_XFYUN_APPID=your_app_id
+EXPO_PUBLIC_XFYUN_API_SECRET=your_api_secret
+EXPO_PUBLIC_XFYUN_API_KEY=your_api_key
+```
 
 ## 📊 功能特性详解
 
