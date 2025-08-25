@@ -77,8 +77,8 @@ app/
 
 1. **克隆项目**
    ```bash
-   git clone <repository-url>
-   cd PandatalkApp
+   git clone https://github.com/splaaaaaa/PandaTalk.git
+   cd PandaTalk
    ```
 
 2. **安装依赖**
@@ -178,8 +178,8 @@ export const xfyunConfig = {
 
 - **项目维护者**: PandaTalk Team
 - **联系邮箱**: spl0203@163.com
-- **项目链接**: [https://github.com/yourusername/PandatalkApp](https://github.com/yourusername/PandatalkApp)
-- **问题反馈**: [Issues](https://github.com/yourusername/PandatalkApp/issues)
+- **项目链接**: [https://github.com/splaaaaaa/PandaTalk](https://github.com/splaaaaaa/PandaTalk)
+- **问题反馈**: [Issues](https://github.com/splaaaaaa/PandaTalk/issues)
 
 ## 🙏 致谢
 
